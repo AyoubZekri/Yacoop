@@ -35,6 +35,4 @@ $check_column = $conn->query("SHOW COLUMNS FROM debts LIKE 'user_id'");
 if ($check_column && $check_column->num_rows == 0) {
     $conn->query("ALTER TABLE debts ADD user_id INT NOT NULL AFTER id");
 }
-?>
-
-
+// لا نضع ?> في نهاية ملفات PHP الصرفة لتجنب أخطاء الهيدر
