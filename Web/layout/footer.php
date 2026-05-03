@@ -7,7 +7,7 @@
                     <div class="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
                         <span class="material-symbols-outlined text-primary text-sm">verified</span>
                     </div>
-                    <p class="text-sm text-slate-500">© <?= date('Y') ?> نظام إدارة الديون الذكي. جميع الحقوق محفوظة.</p>
+                    <p class="text-sm text-slate-500">© <?= date('Y') ?> نظام إدارة المبيعات الذكي. جميع الحقوق محفوظة.</p>
                 </div>
                 <div class="flex gap-6">
                     <a href="#" class="text-sm text-slate-400 hover:text-primary transition-colors">عن النظام</a>

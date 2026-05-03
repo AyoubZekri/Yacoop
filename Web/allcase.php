@@ -49,50 +49,70 @@ if (!isset($_SESSION['user_id']) && !in_array($current_page, ['login.php', 'regi
 
 $user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
 
-// Debt Management
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['customer_name'], $_POST['amount'])) {
-    $customer_name = $conn->real_escape_string($_POST['customer_name']);
-    $amount = (float)$_POST['amount'];
-    $debt_date = $conn->real_escape_string($_POST['debt_date']);
-    $payment_status = $_POST['payment_status'];
-    
-    if (isset($_POST['debt_id']) && !empty($_POST['debt_id'])) {
-        // Edit (Strict check on user_id)
-        $id = (int)$_POST['debt_id'];
-        $conn->query("UPDATE debts SET customer_name='$customer_name', amount=$amount, debt_date='$debt_date', payment_status='$payment_status' WHERE id=$id AND user_id=$user_id");
-    } else {
-        // Add
-        $conn->query("INSERT INTO debts (user_id, customer_name, amount, debt_date, payment_status) VALUES ($user_id, '$customer_name', $amount, '$debt_date', '$payment_status')");
-    }
-    header("Location: list_debts.php");
-    exit();
-}
-
-// Delete
-if (isset($_GET['delete_debt'])) {
-    $id = (int)$_GET['delete_debt'];
-    $conn->query("DELETE FROM debts WHERE id = $id AND user_id = $user_id");
-    $redirect = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'list_debts.php';
-    header("Location: $redirect");
-    exit();
-}
-
-// Toggle Status
-if (isset($_GET['toggle_status'])) {
-    $id = (int)$_GET['toggle_status'];
-    $conn->query("UPDATE debts SET payment_status = IF(payment_status='paid', 'unpaid', 'paid') WHERE id = $id AND user_id = $user_id");
-    $redirect = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'list_debts.php';
-    header("Location: $redirect");
-    exit();
-}
-
-// Fetch (User Specific)
-$debts = [];
-if ($user_id > 0) {
-    $result = $conn->query("SELECT * FROM debts WHERE user_id = $user_id ORDER BY created_at DESC");
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            $debts[] = $row;
+// Product Management
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    if ($_POST['action'] === 'add_product') {
+        $name = $conn->real_escape_string($_POST['name']);
+        $description = $conn->real_escape_string($_POST['description']);
+        $price = (float)$_POST['price'];
+        $stock = (int)$_POST['stock'];
+        
+        if (isset($_POST['product_id']) && !empty($_POST['product_id'])) {
+            $id = (int)$_POST['product_id'];
+            $conn->query("UPDATE products SET name='$name', description='$description', price=$price, stock=$stock WHERE id=$id AND user_id=$user_id");
+        } else {
+            $conn->query("INSERT INTO products (user_id, name, description, price, stock) VALUES ($user_id, '$name', '$description', $price, $stock)");
         }
+        header("Location: products.php");
+        exit();
     }
+
+    if ($_POST['action'] === 'add_sale') {
+        $customer_name = $conn->real_escape_string($_POST['customer_name']);
+        $sale_date = $conn->real_escape_string($_POST['sale_date']);
+        $total_amount = (float)$_POST['total_amount'];
+        $products_data = $_POST['products']; // JSON or array of {id, qty, price}
+
+        $conn->query("INSERT INTO sales (user_id, customer_name, total_amount, sale_date) VALUES ($user_id, '$customer_name', $total_amount, '$sale_date')");
+        $sale_id = $conn->insert_id;
+
+        foreach ($products_data as $item) {
+            $p_id = (int)$item['id'];
+            $qty = (int)$item['qty'];
+            $u_price = (float)$item['price'];
+            $subtotal = $qty * $u_price;
+            $conn->query("INSERT INTO sale_items (sale_id, product_id, quantity, unit_price, subtotal) VALUES ($sale_id, $p_id, $qty, $u_price, $subtotal)");
+            // Update stock
+            $conn->query("UPDATE products SET stock = stock - $qty WHERE id = $p_id");
+        }
+        header("Location: list_sales.php");
+        exit();
+    }
+}
+
+// Delete Product
+if (isset($_GET['delete_product'])) {
+    $id = (int)$_GET['delete_product'];
+    $conn->query("DELETE FROM products WHERE id = $id AND user_id = $user_id");
+    header("Location: products.php");
+    exit();
+}
+
+// Fetch Data
+$products = [];
+$sales = [];
+$debts = [];
+
+if ($user_id > 0) {
+    // Products
+    $res = $conn->query("SELECT * FROM products WHERE user_id = $user_id ORDER BY name ASC");
+    while ($row = $res->fetch_assoc()) $products[] = $row;
+
+    // Sales
+    $res = $conn->query("SELECT * FROM sales WHERE user_id = $user_id ORDER BY created_at DESC");
+    while ($row = $res->fetch_assoc()) $sales[] = $row;
+
+    // Debts (Keep for compatibility)
+    $res = $conn->query("SELECT * FROM debts WHERE user_id = $user_id ORDER BY created_at DESC");
+    while ($row = $res->fetch_assoc()) $debts[] = $row;
 }

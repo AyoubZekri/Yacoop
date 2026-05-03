@@ -71,3 +71,9 @@ include "layout/header.php";
 </main>
 
 <?php include "layout/footer.php"; ?>
+
+
+<!-- sudo apt update
+sudo apt install git docker.io -->
+
+<!-- kubectl apply -f k8s-distributed.yaml -->

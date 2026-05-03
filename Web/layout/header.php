@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>نظام إدارة الديون الذكي</title>
+    <title>نظام إدارة المبيعات الذكي</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -16,8 +16,8 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#0d9488",
-                        "secondary": "#f43f5e",
+                        "primary": "#4f46e5",
+                        "secondary": "#10b981",
                         "background-light": "#f8fafc",
                         "background-dark": "#0f172a",
                     },
@@ -45,9 +45,9 @@
                 <div class="flex items-center gap-8">
                     <a href="index.php" class="flex items-center gap-3">
                         <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-indigo-600 text-white shadow-lg">
-                            <span class="material-symbols-outlined">payments</span>
+                            <span class="material-symbols-outlined">shopping_cart</span>
                         </div>
-                        <h1 class="text-xl font-bold tracking-tight hidden sm:block">إدارة الديون</h1>
+                        <h1 class="text-xl font-bold tracking-tight hidden sm:block">إدارة المبيعات</h1>
                     </a>
                     
                     <nav class="hidden md:flex items-center gap-2">
@@ -55,15 +55,20 @@
                             <span class="material-symbols-outlined text-sm">dashboard</span>
                             الرئيسية
                         </a>
-                        <a href="list_debts.php" class="flex items-center gap-2 px-4 py-2 rounded-xl transition-all <?= basename($_SERVER['PHP_SELF']) == 'list_debts.php' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100' ?>">
-                            <span class="material-symbols-outlined text-sm">list_alt</span>
-                            قائمة الديون
+                        <a href="products.php" class="flex items-center gap-2 px-4 py-2 rounded-xl transition-all <?= basename($_SERVER['PHP_SELF']) == 'products.php' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100' ?>">
+                            <span class="material-symbols-outlined text-sm">inventory_2</span>
+                            المنتجات
                         </a>
-                        <a href="add_debt.php" class="flex items-center gap-2 px-4 py-2 rounded-xl transition-all <?= basename($_SERVER['PHP_SELF']) == 'add_debt.php' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100' ?>">
-                            <span class="material-symbols-outlined text-sm">add_circle</span>
-                            إضافة دين
+                        <a href="list_sales.php" class="flex items-center gap-2 px-4 py-2 rounded-xl transition-all <?= basename($_SERVER['PHP_SELF']) == 'list_sales.php' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100' ?>">
+                            <span class="material-symbols-outlined text-sm">receipt_long</span>
+                            المبيعات
+                        </a>
+                        <a href="add_sale.php" class="flex items-center gap-2 px-4 py-2 rounded-xl transition-all <?= basename($_SERVER['PHP_SELF']) == 'add_sale.php' ? 'bg-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100' ?>">
+                            <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                            بيع جديد
                         </a>
                     </nav>
+
                 </div>
 
                 <div class="flex items-center gap-4">
