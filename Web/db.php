@@ -1,11 +1,9 @@
 <?php
-
 $host="db";
 $user="root";
 $pass="root";
 $db="docker";
 
-// محاولة الاتصال عدة مرات للسماح لقاعدة البيانات بالبدء
 $max_retries = 5;
 $retry_count = 0;
 $conn = null;
@@ -17,7 +15,6 @@ while ($retry_count < $max_retries) {
             break;
         }
     } catch (Exception $e) {
-        // الانتظار لمدة ثانيتين قبل المحاولة التالية
         sleep(2);
         $retry_count++;
     }
@@ -27,8 +24,6 @@ if (!$conn || $conn->connect_error) {
     die("تعذر الاتصال بقاعدة البيانات. يرجى التأكد من تشغيل حاوية MySQL.");
 }
 
-
-// التأكد من وجود الجداول
 $conn->query("CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -75,10 +70,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS debts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )");
 
-// إضافة عمود user_id إذا لم يكن موجوداً (للمنشآت القديمة)
 $check_column = $conn->query("SHOW COLUMNS FROM debts LIKE 'user_id'");
 if ($check_column && $check_column->num_rows == 0) {
     $conn->query("ALTER TABLE debts ADD user_id INT NOT NULL AFTER id");
 }
-
-// لا نضع ?> في نهاية ملفات PHP الصرفة لتجنب أخطاء الهيدر
