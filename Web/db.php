@@ -5,11 +5,28 @@ $user="root";
 $pass="root";
 $db="docker";
 
-$conn=new mysqli($host,$user,$pass,$db);
+// محاولة الاتصال عدة مرات للسماح لقاعدة البيانات بالبدء
+$max_retries = 5;
+$retry_count = 0;
+$conn = null;
 
-if($conn->connect_error){
-    die("connection failed");
+while ($retry_count < $max_retries) {
+    try {
+        $conn = new mysqli($host, $user, $pass, $db);
+        if (!$conn->connect_error) {
+            break;
+        }
+    } catch (Exception $e) {
+        // الانتظار لمدة ثانيتين قبل المحاولة التالية
+        sleep(2);
+        $retry_count++;
+    }
 }
+
+if (!$conn || $conn->connect_error) {
+    die("تعذر الاتصال بقاعدة البيانات. يرجى التأكد من تشغيل حاوية MySQL.");
+}
+
 
 // التأكد من وجود الجداول
 $conn->query("CREATE TABLE IF NOT EXISTS users (
