@@ -1,5 +1,5 @@
 <?php
-$host="db";
+$host="mysql_host";
 $user="root";
 $pass="root";
 $db="docker";
